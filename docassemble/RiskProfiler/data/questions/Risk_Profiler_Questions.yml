@@ -1,0 +1,351 @@
+---
+metadata:
+  title: |
+    Risk Profiler
+  short title: |
+    RP
+  description: |
+    Magnitude Risk Profiler Question Booklet (version 1.5 from 2018) as an app!
+---
+include:
+  - RiskProfiler_Expanded_Qs.yml
+---
+sections:
+  - Introduction
+  - Details
+  - Risk Tolerance
+  - Financial Goals
+  - Time Horizon
+  # - Preferred Risk Profile Validation
+  - Notes
+  - Declaration
+  - Finishing Up
+---
+features:
+  navigation: True
+---
+objects:
+  - adviser: Person
+  - client: Individual
+  - partner: Individual
+---
+mandatory: True
+code: |
+  nav.set_section('Introduction')
+  introduction
+
+  nav.set_section('Details')
+  client.name.first
+  
+  nav.set_section('Risk Tolerance')
+  what_risk_means
+  what_return_means
+  client.risk_score_profile
+  if client_has_spouse:
+    partner.risk_score_profile
+  
+  nav.set_section('Financial Goals')
+  client.fin_goals_score
+  if client_has_spouse:
+    partner.fin_goals_score
+  
+  nav.set_section('Time Horizon')
+  client.time_horizon_score
+  if client_has_spouse:
+    partner.time_horizon_score
+ 
+  nav.set_section('Notes')
+  general_notes
+  
+  nav.set_section('Declaration')
+  client.signature
+  if client_has_spouse:
+    partner.signature
+
+  nav.set_section('Finishing Up')
+  download_pdf
+---
+question: |
+  A demonstration document assembly app using docassemble.
+
+subquestion: |
+  This is a demonstration application for collecting answers to fill out risk profile form.
+  The app is created using the open source software docassemble and uses the answers to estimate a risk profile
+  and complete a risk profiler form at the end of the interview.
+
+field: introduction
+---
+generic object: Person
+
+question: |
+  Describe the client and adviser
+
+fields:
+  - Client and/or partner salutation: client_salutation
+  - Client name: client.name.first
+  - Client lastname: client.name.last
+  - is your spouse completing the risk profile too?: client_has_spouse
+    datatype: yesnoradio
+  - Partner name: partner.name.first
+    show if: client_has_spouse
+  - Partner lastname: partner.name.last
+    show if: client_has_spouse
+  - Date of risk profile: risk_profile_date
+    datatype: date
+  - Client adviser: adviser.name.text
+    choices:
+      - Stuart Brown
+      - Adam McCann  
+---
+question: | 
+  What does **risk** mean to you?
+
+fields:
+  - no label: what_risk_means
+    datatype: area
+---
+question: | 
+  What does **return** mean to you?
+
+fields:
+  - no label: what_return_means
+    datatype: area
+---
+question: |
+  Notes.
+subquestion: |
+  Please add any notes that may be important in determining your risk profile and investments here.
+
+fields:
+  - no label: general_notes
+    datatype: area
+
+---
+mandatory: True
+code: |
+  practice_name = "Bartons Financial Services" 
+---
+generic object: Individual
+code: |
+  x.risk_score = int(x.yourself_financially) + int(x.financial_familiarity) + int(x.loss_or_opportunity) + int(x.feeling_at_twentypercent_loss) + int(x.preferred_portfolio) + int(x.how_to_invest_windfall) + int(x.risk_above_cash)
+  
+  if 0 <= x.risk_score <= 8: 
+    x.risk_profile =  ' Cash Only'
+  elif 9 <= x.risk_score <= 11:  
+    x.risk_profile = ' Defensive'
+  elif 12 <= x.risk_score <= 15:  
+    x.risk_profile = ' Moderate'
+  elif 16 <= x.risk_score <= 19:  
+    x.risk_profile = ' Balanced'
+  elif 20 <= x.risk_score <= 22:  
+    x.risk_profile = ' Growth'
+  elif 23 <= x.risk_score:  
+    x.risk_profile = ' High Growth'
+  
+  x.risk_score_profile = str(x.risk_score) + x.risk_profile
+---
+generic object: Individual
+code: |
+  x.fin_goals_score = int(x.fin_goal_best_description) + int(x.std_living_expectation)+ int(x.need_more_risk)
+  
+  if 0 <= x.fin_goals_score  <= 4: 
+    x.fin_goals_profile =  ' Low'
+  elif 5 <= x.fin_goals_score  <= 7:  
+    x.fin_goals_profile = ' Med'
+  elif 8 <= x.fin_goals_score <= 10:  
+    x.fin_goals_profile = ' High'
+  
+  x.fin_goals_score_profile = str(x.fin_goals_score) + x.fin_goals_profile
+---
+generic object: Individual
+code: |
+  x.time_horizon_score = int(x.investment_time_horizon) + int(x.stage_of_life)
+  
+  if 0 <= x.time_horizon_score  <= 4: 
+    x.time_horizon_profile =  ' Low'
+  elif 5 <= x.time_horizon_score  <= 7:  
+    x.time_horizon_profile = ' Med'
+  elif 8 <= x.time_horizon_score <= 10:  
+    x.time_horizon_profile = ' High'
+  
+  x.time_horizon_score_profile = str(x.time_horizon_score) + x.time_horizon_profile
+---
+generic object: Individual
+code: |
+  x.pref_risk_profile_score = int(x.risk_score) + int(x.fin_goals_score) + int(x.time_horizon_score)
+  
+  if 0 <= x.pref_risk_profile_score <= 11: 
+    x.rec_risk_profile =  ' Cash Only'
+  elif 12 <= x.pref_risk_profile_score <= 20:  
+    x.rec_risk_profile = ' Defensive'
+  elif 21 <= x.pref_risk_profile_score <= 28:  
+    x.rec_risk_profile = ' Moderate'
+  elif 29 <= x.pref_risk_profile_score <= 36:  
+    x.rec_risk_profile = ' Balanced'
+  elif 37 <= x.pref_risk_profile_score <= 41:  
+    x.rec_risk_profile = ' Growth'
+  elif 42 <= x.pref_risk_profile_score <= 46:  
+    x.rec_risk_profile = ' High Growth'
+  else:
+    x.rec_risk_profile = " "
+---
+generic object: Individual
+code: |
+  if x.rec_risk_profile == ' Cash Only':
+    x.cash_alloc = '100.0'
+    x.fixed_alloc = '0.0'
+    x.aus_shares = '0.0' 
+    x.intl_shares = '0.0' 
+    x.property_infr = '0.0'
+    x.alternatives = '0.0'
+  elif x.rec_risk_profile == ' Defensive':
+    x.cash_alloc = '25.0'
+    x.fixed_alloc = '42.0'
+    x.aus_shares = '13.5'
+    x.intl_shares = '6.5'
+    x.property_infr = '8.0'
+    x.alternatives = '5.0'
+  elif x.rec_risk_profile == ' Moderate':
+    x.cash_alloc = '12.0'
+    x.fixed_alloc = '36.0' 
+    x.aus_shares = '23.5'
+    x.intl_shares = '13.5'
+    x.property_infr = '8.0'
+    x.alternatives = '7.0'
+  elif x.rec_risk_profile == ' Balanced':
+    x.cash_alloc = '5.0'
+    x.fixed_alloc = '24.0'
+    x.aus_shares = '27.5'
+    x.intl_shares = '26.5'
+    x.property_infr = '8.0'
+    x.alternatives = '9.0'
+  elif x.rec_risk_profile == ' Growth':
+    x.cash_alloc = '3.0'
+    x.fixed_alloc = '12.0'
+    x.aus_shares = '35.0'
+    x.intl_shares = '32.0'
+    x.property_infr = '8.0'
+    x.alternatives = '10.0'
+  elif x.rec_risk_profile == ' High Growth':
+    x.cash_alloc = '0.0'
+    x.fixed_alloc = '7.5' 
+    x.aus_shares = '40.0'
+    x.intl_shares = '37.5'
+    x.property_infr = '5.0'
+    x.alternatives = '10.0'
+---
+generic object: Individual
+question: |
+  Please sign to confirm that your details are correct.
+subquestion: |
+  ${ x.name.first } by signing here you certify your answers.
+signature: x.signature
+---
+event: download_pdf
+question: Here is your completed risk profile.
+# allow emailing: False
+attachment:
+  - name: Risk Profiler - Version 1.5 - Question Book
+    filename: testing filename
+    pdf template file: Risk_Profiler_-_Version_1.pdf
+    field code:
+      - "Client name": client_salutation
+      - "Adviser name" : adviser.name.text
+      - "Practice name": practice_name
+      - "Date on cover": risk_profile_date.strftime('%-d%m%Y')
+      - "Adviser name 1": adviser.name.text
+      - "Customer 1 name": client.name.first
+      - "Customer 2 name": showifdef('partner.name.first')
+      - "What does risk mean to you": what_risk_means
+      - "What does return mean to you": what_return_means
+      - "Customer 2 name": showifdef('partner.name.first')
+      - "C1-1": client.yourself_financially
+      - "C2-1": showif('partner.yourself_financially', client_has_spouse)
+      # - "Notes": something
+      - "C1-2": client.financial_familiarity
+      - "C2-2": showif('partner.financial_familiarity', client_has_spouse)
+      # - "Notes_2": something
+      - "C2-3": showif('partner.loss_or_opportunity', client_has_spouse)
+      - "C1-3": client.loss_or_opportunity
+      # - "Notes_3": something
+      - "C1-4": client.feeling_at_twentypercent_loss
+      - "C2-4": showif('partner.feeling_at_twentypercent_loss', client_has_spouse)
+      # - "Notes_4": something
+      - "C1-5": client.preferred_portfolio
+      - "C2-5": showif('partner.preferred_portfolio', client_has_spouse)
+      # - "Notes_5": something
+      - "C1-6": client.how_to_invest_windfall
+      - "C2-6": showif('partner.how_to_invest_windfall', client_has_spouse)
+      # - "Notes_6": something
+      - "C1-7": client.risk_above_cash
+      - "C2-7": showif('partner.risk_above_cash', client_has_spouse)
+      # - "C1-RiskScore": client.risk_score
+      # - "C2-RiskScore": showif('partner.risk_score', client_has_spouse)
+      - "C1-RiskProfile": client.risk_score_profile
+      - "C2-RiskProfile": showif('partner.risk_score_profile', client_has_spouse)
+      # - "Notes_7": something
+      - "C2-8": showif('partner.fin_goal_best_description', client_has_spouse)
+      - "C1-8": client.fin_goal_best_description
+      # - "Notes_8": something
+      - "C1-9": client.std_living_expectation
+      - "C2-9": showif('partner.std_living_expectation', client_has_spouse)
+      # - "Notes_9": something
+      - "C1-10": client.need_more_risk
+      - "C2-10": showif('partner.need_more_risk', client_has_spouse)
+      # - "Notes_10": something
+      # - "C1-FinGoalScore": 0
+      # - "C2-FinGoalScore": 0
+      - "C2-FinGoalsAssessment": showif('partner.fin_goals_score_profile', client_has_spouse)
+      - "C1-FinGoalsAssessment": client.fin_goals_score_profile
+      - "C1-11": client.investment_time_horizon
+      - "C2-11": showif('partner.investment_time_horizon', client_has_spouse)
+      # - "Notes_11": something
+      - "C1-12": client.stage_of_life
+      - "C2-12": showif('partner.stage_of_life', client_has_spouse)
+      # - "Notes_12": something
+      # - "C1-TimeHorizonScore": 0
+      # - "C2-TimeHorizonScore": 0
+      - "C2-TimeHorizonAssessment": showif('partner.time_horizon_score_profile', client_has_spouse)
+      - "C1-TimeHorizonAssessment": client.time_horizon_score_profile
+      # - "ResponseRefer to the chart on page 10 of the Risk Profiler Information Booklet Risk profile performance over time Lets look at a particular market event If you had invested as per your indicative risk profile this is what your portfo io would ook like How do you feel about the change in the value of your investment": something
+      # - "ResponseRefer to the chart on page 11 of the Risk Profiler Information Booklet Time reduces risk across risk profiles Assume we invest your assets in your indicative risk profile and then consider the range of outcomes Looking at the range of bestcase and worstcase returns over time how do you feel about the range of outcomes with respect to your financ al goal eg ret rement": something
+      # - "ResponseRefer to the charts on pages 10 and 11 of the Risk Profiler Information Booklet Assume we invest your assets in your indicative risk profile How would you feel if your expected goal cannot be met How would you feel if we d al ed up your portfolio risk": something
+      - "C1-PreferredRiskProfile": client.rec_risk_profile
+      - "C2-PreferredRiskProfile": showif('partner.rec_risk_profile', client_has_spouse)
+      # - "PreferredRiskProfileNotes": something
+      - "C2-PreferredRiskProfile-AustShares": showif('partner.aus_shares', client_has_spouse)
+      # - "C2-AlternativeAssetAllocation-AustShares": something
+      # - "C1-AlternativeAssetAllocation-AustShares": something
+      - "C1-PreferredRiskProfile-AustShares": client.aus_shares
+      - "C2-PreferredRiskProfile-IntlShares": showif('partner.intl_shares', client_has_spouse)
+      # - "C2-AlternativeAssetAllocation-IntShares": something
+      # - "C1-AlternativeAssetAllocation-IntShares": something
+      - "C1-PreferredRiskProfile-IntlShares": client.intl_shares
+      # - "AltAssetAllocation-Exceptions": something
+      # - "C2-AlternativeAssetAllocation-Property": something
+      - "C2-PreferredRiskProfile-Property": showif('partner.property_infr', client_has_spouse)
+      # - "C1-AlternativeAssetAllocation-Property": something
+      - "C1-PreferredRiskProfile-Property": client.property_infr
+      - "C2-PreferredRiskProfile-FixedInterest": showif('partner.fixed_alloc', client_has_spouse)
+      # - "C2-AlternativeAssetAllocation-FixedInt": something
+      # - "C1-AlternativeAssetAllocation-FixedInt": something
+      - "C1-PreferredRiskProfile-FixedInterest": client.fixed_alloc
+      # - "C2-AlternativeAssetAllocation-Alt": something
+      - "C2-PreferredRiskProfile-Alternatives": showif('partner.alternatives', client_has_spouse)
+      # - "C1-AlternativeAssetAllocation-Alt": something
+      - "C1-PreferredRiskProfile-Alternatives": client.alternatives
+      # - "AltAssetAllocation-Reasons": something
+      - "C2-PreferredRiskProfile-Cash": showif('partner.cash_alloc', client_has_spouse)
+      # - "C2-AlternativeAssetAllocation-Cash": something
+      # - "C1-AlternativeAssetAllocation-Cash": something
+      - "C1-PreferredRiskProfile-Cash": client.cash_alloc
+      # - "declare": No
+      # - "declare 2": No
+      - "C2-Date": risk_profile_date.strftime('%-d%m%y')
+      - "C2-Signature": showif('partner.signature', client_has_spouse)
+      - "C1-Date": risk_profile_date.strftime('%-d%m%y')
+      - "C1-Signature": client.signature
+      - "GeneralNotes2": general_notes 
+      
+                 
+---

@@ -1,0 +1,168 @@
+---
+# risk tolerance questions
+---
+generic object: Individual
+question: |
+  Your risk tolerance.
+subquestion: |
+  ${ x.name.first }, in general, how would you describe yourself financially?
+  
+fields: 
+  - no label: x.yourself_financially
+    input type: radio
+    choices:
+      - "A risk avoider": 1
+      - "Cautious": 2
+      - "Willing to take some risk after some planning and forethought": 3
+      - "A real risk taker": 4
+---
+generic object: Individual
+question: | 
+  Your familiarity with investments.
+subquestion: |
+  ${ x.name.first }, how familiar are you with investment matters?
+
+field: x.financial_familiarity
+choices:
+  - "Not very familiar at all": 1
+  - "Somewhat familiar": 2
+  - "Very familiar": 3
+---
+generic object: Individual
+question: |
+  What is risk?
+subquestion: |
+  ${ x.name.first }, when you think of the word "risk" which of the following words comes to mind first?
+  
+field: x.loss_or_opportunity
+choices:
+  - "Loss": 1
+  - "Opportunity": 2
+---
+generic object: Individual
+question: |
+  Loss aversion.
+subquestion: |
+  ${ x.name.first }, suppose a year ago you had invested your portfolio. Today you checked its value and find it has gone down 20%. How would you feel?
+
+field: x.feeling_at_twentypercent_loss
+choices:
+  - "Panic": 1
+  - "Nervous": 2
+  - "Patient": 3
+  - "Positive": 4
+---
+generic object: Individual
+question: |
+  Investing a surplus.
+
+subquestion: |
+  ${ x.name.first }, at the beginning of the year you have a signficant amount of money to invest. The chart and options below show the performance of four possible investments.
+  Each bar gives a range of possible returns over the next year (i.e. with Portfolio 4 you have a chane of increasing your portfolio by 50% but equally likely to lose ~30% over the year).
+  
+  Which investment would you prefer? 
+  
+  [FILE Portfolio_Best_Worst_Return.png, 100%]
+ 
+field: x.preferred_portfolio
+choices:
+  - "Portfolio 1": 1
+  - "Portfolio 2": 2
+  - "Portfolio 3": 3
+  - "Portfolio 4": 4
+---
+generic object: Individual
+question: |
+  Investing a windfall.
+subquestion: |
+  ${ x.name.first }, you unexpectedly receive a sizeable amount of money (not large enough to make a significant impact nor sall to be meaningless) and the only condition is you have to invest in ONE of the following choices?
+  Which one would you select?
+  
+field: x.how_to_invest_windfall
+choices:
+  - "A bank account or term deposit": 1
+  - "A managed investment of shares and property": 2
+  - "A portfolio of listed shares": 3
+  - "A portfolio of high risk assets such as commodities and derivatives": 4
+---
+generic object: Individual
+question: |
+ Risk tolerance.
+subquestion: |
+ ${ x.name.first }, assuming all of your money is held in cash, if you could increase your chances of improving your returns by taking more risk, would you be:
+  
+field: x.risk_above_cash
+choices:
+  - "Unikely to take much more risk": 1
+  - "Willing to take risk with a quarter of the money": 2
+  - "Willing to take more risk with half of the money": 3
+  - "Willing to take more risk with all of the money": 4
+---
+generic object: Individual
+question: |
+ Financial goals.
+subquestion: |
+ ${ x.name.first } which of the following best describes your financial goals?
+
+field: x.fin_goal_best_description
+choices:
+  - "Avoid losing your capital": 1
+  - "Achieve returns above inflation": 2
+  - "Generating some current income and growing assets over an extended time frame": 3
+  - "Growing assets substantially over an extended time frame": 4
+---
+generic object: Individual
+question: |
+  Standard of living.
+subquestion: |
+ ${ x.name.first } how do you expect your standard of living five years from now to compare to your standard of living today?
+
+field: x.std_living_expectation
+choices:
+  - Less than it is today: 1
+  - The same as it is today: 2
+  - Somewhat higher than it is today: 3
+  - Substantially greater than it is today: 4
+---
+generic object: Individual
+question: |
+  How much risk is needed?
+subquestion: |
+  ${ x.name.first } do you believe that you need to take on more risk to achieve higher financial goals?
+
+field: x.need_more_risk
+choices:
+  - Disagree: 1
+  - Agree: 2
+---
+# time horizon questions
+---
+generic object: Individual
+question: |
+  Investment time horizon.
+subquestion: |
+  ${ x.name.first } how long would you invest the majority of your money (more than 50%) before you think you would need to access it? (assuming you do not have short cash or emergency requirements?)
+
+field: x.investment_time_horizon
+choices:   
+  - In two years or less: 1
+  - Within 3 to 5 years: 2
+  - Within 5 to 7 years: 3
+  - Not for 10+ years: 4
+---
+generic object: Individual
+question: |
+  Stage of life.
+subquestion: |
+  ${ x.name.first }, which of the following best describes your current stage of life (i.e. closest fit?)?
+
+field: x.stage_of_life
+choices:  
+  - Retired: 1
+  - Preparing for retirement: 2
+  - Mature family: 3
+  - Young family with financial commitments: 4
+  - Couple with children: 5
+  - Couple with no children preparing for the future: 5
+  - Single with few financial burdens: 6
+---
