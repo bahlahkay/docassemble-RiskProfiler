@@ -81,7 +81,7 @@ question: |
   Describe the client and adviser
 
 fields:
-  - Client and/or partner salutation: client_salutation
+  - Client and/or partner name to show on report cover: client_salutation
   - Client name: client.name.first
   - Client lastname: client.name.last
   - is your spouse completing the risk profile too?: client_has_spouse
